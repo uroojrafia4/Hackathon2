@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post</title>
+    <!-- <link href="./style.css" rel="stylesheet" type="text/css" /> -->
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 0 15px;
+            padding: 5px;
+        }
+
+        header nav a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Blog Content Styles */
+        .blog-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .blog-container h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .blog-container .meta {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .blog-container .description {
+            font-size: 18px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .blog-container .timestamp {
+            font-size: 14px;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        /* Button to go back */
+        .back-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="auth.html">Home</a>
+            <span> | </span>
+            <a href="blog-page.html">Post</a>
+        </nav>
+    </header>
+
+    <!-- Blog Post Section -->
+    <main class="blog-container">
+        <section class="blog-content">
+            <h1 id="post-title"></h1>
+            <p class="meta" id="post-meta"></p>
+            <div class="description" id="post-description"></div>
+            <p class="timestamp" id="post-timestamp"></p>
+            <a href="auth.html" class="back-btn">Back to Home</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Your Blog Name. All rights reserved.</p>
+    </footer>
+
+    <!-- Script to Fetch and Display Post -->
+    <script type="module">
+        // Initialize Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+        const firebaseConfig = {
+    apiKey: "AIzaSyBSxIZ3Ot_jZ2BqIOKTFY4uZnw2iNdckAQ",
+    authDomain: "practice-project-528a5.firebaseapp.com",
+    projectId: "practice-project-528a5",
+    storageBucket: "practice-project-528a5.firebasestorage.app",
+    messagingSenderId: "962288126148",
+    appId: "1:962288126148:web:67676ce734011a2a86a191",
+    measurementId: "G-HQVQREHNJ9"
+};
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchPostData() {
+            const postId = new URLSearchParams(window.location.search).get('postId');
+            
+            if (!postId) {
+                console.log("Post ID is missing");
+                return;
+            }
+
+            // Fetch post from Firebase using the postId
+            const postRef = doc(db, "posts", postId); // Get the document reference
+            try {
+                const docSnap = await getDoc(postRef);
+                if (docSnap.exists()) {
+                    const post = docSnap.data();
+                    document.getElementById('post-title').textContent = `${post.writer}'s Post`;
+                    document.getElementById('post-meta').textContent = `By ${post.writer} • ${post.readingTime} min read`;
+                    document.getElementById('post-description').textContent = post.description;
+                    document.getElementById('post-timestamp').textContent = `Posted on: ${new Date(post.timestamp).toLocaleString()}`;
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching post:", error);
+            }
+        }
+
+        window.onload = fetchPostData;
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"></script>
+    <script type="module"  src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"></script>
+    <script src="./app.js" type="module"></script>
+</body>
+
+</html>
