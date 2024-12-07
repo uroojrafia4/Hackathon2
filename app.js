@@ -111,7 +111,6 @@ loginBtn.addEventListener("click", async (e) => {
         })
         authSection.style.display = "none";
         appSection.style.display = "block";
-        loadTasks();
     } catch (error) {
         if (error.code === "auth/too-many-requests") {
             Swal.fire({
@@ -140,7 +139,7 @@ loginBtn.addEventListener("click", async (e) => {
 // Logout
 logoutBtn.addEventListener("click", async () => {
     await auth.signOut();
-    Swal.fire({
+await Swal.fire({
         title: "Logout Successful",
         icon: "success",
     })
